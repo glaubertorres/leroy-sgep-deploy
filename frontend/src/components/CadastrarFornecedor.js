@@ -150,23 +150,22 @@ const CadastrarFornecedor = ({ onSuccess, onClose, fornecedorToEdit = null }) =>
 
             <div className="fornecedor-linha">
                 <div className="fornecedor-campo">
-                    <label htmlFor="politica_devolucao">Política de Devolução (dias):</label>
-                    <input 
-                        className="fornecedor-input" 
-                        id="politica_devolucao" 
-                        name="politica_devolucao" 
-                        type="number" 
-                        onChange={handleChange} 
-                        value={formData.politica_devolucao}
-                        placeholder="Ex: 30"
-                        min="0"
-                        max="365"
-                        required 
-                    />
-                    <small className="fornecedor-helper-text">
-                        Número de dias para devolução de produtos
-                    </small>
-                </div>
+                        <label htmlFor="politica_devolucao">Política de Devolução:</label>
+                        <textarea 
+                            className="fornecedor-input" 
+                            id="politica_devolucao" 
+                            name="politica_devolucao" 
+                            rows="4"
+                            onChange={handleChange} 
+                            value={formData.politica_devolucao} 
+                            maxLength="500"
+                            required
+                            placeholder="Descreva as condições, prazos e regras para devolução..."
+                        />
+                        <div style={{ textAlign: 'right', fontSize: '0.8rem', color: '#666' }}>
+                            {formData.politica_devolucao.length}/500
+                        </div>
+                    </div>
             </div>
 
             <div className="fornecedor-linha">
