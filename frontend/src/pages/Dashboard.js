@@ -158,13 +158,12 @@ const Dashboard = () => {
 
                 <div className="kpi-card lotes-card">
                     <div className="kpi-header">
-                        <h3>Lotes Cadastrados</h3>
+                        <h3>Produtos Cadastrados (LMs)</h3>
                     </div>
-                    <div className="kpi-value">{estatisticas.total_lotes}</div>
+                    <div className="kpi-value">{estatisticas.total_produtos}</div>
                     <div className="kpi-footer">
-                        <span>Total de lotes no sistema</span>
+                        <span>Unidades em Estoque</span>
                         <div className="sub-info">
-                            <span>Nº de produtos em estoque</span>
                             <strong>{estatisticas.produtos_em_estoque}</strong>
                         </div>
                     </div>
@@ -176,9 +175,8 @@ const Dashboard = () => {
                     </div>
                     <div className="kpi-value">{formatCurrency(valor_total_perdido)}</div>
                     <div className="kpi-footer">
-                        <span>Valor total em lotes perdidos</span>
+                        <span>Lotes demarcados</span>
                         <div className="sub-info">
-                            <span>Lotes perdidos</span>
                             <strong>{estatisticas.lotes_perdidos}</strong>
                         </div>
                     </div>

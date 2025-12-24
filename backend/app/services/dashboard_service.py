@@ -43,8 +43,8 @@ class DashboardService:
                             "$group": {
                                 "_id": None,
                                 "total_produtos": { "$sum": 1 },
-                                "produtos_em_estoque": {
-                                    "$sum": { "$cond": [{ "$gt": ["$estoque_reportado", 0] }, 1, 0] }
+                                "produtos_em_estoque": { 
+                                    "$sum": { "$ifNull": ["$estoque_reportado", 0] } 
                                 },
                                 "valor_total": {
                                     "$sum": { "$multiply": ["$preco_unit", { "$ifNull": ["$estoque_reportado", 0] }] }
@@ -52,6 +52,10 @@ class DashboardService:
                             }
                         }
                     ],
+
+                    
+
+                    
                     
                     # 2. Lotes e Perdas
                     "lotes_info": [
