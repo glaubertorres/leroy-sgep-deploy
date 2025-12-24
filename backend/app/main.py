@@ -17,9 +17,7 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-origins = [
-    settings.FRONTEND_ORIGIN
-]
+origins = settings.FRONTEND_ORIGINS
 
 app.add_middleware(
     CORSMiddleware,
