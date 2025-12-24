@@ -96,6 +96,13 @@ const Estoque = () => {
     return new Date(dataObj.getTime() + dataObj.getTimezoneOffset() * 60000).toLocaleDateString('pt-BR');
   };
 
+  const getDiasParaVencimento = (dataValidade) => {
+    if (!dataValidade) return null;
+    const hoje = new Date();
+    const diffTime = new Date(dataValidade).getTime() - hoje.getTime();
+    return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+  };
+
   const getStatusEtiqueta = (dataValidade) => {
     if (!dataValidade) return { 
       texto: 'Sem Lotes', 
@@ -256,7 +263,16 @@ const Estoque = () => {
     return <div>Carregando dados do estoque...</div>;
   }
 
-  const produtosFiltrados = filtrarProdutos();
+  const produtosFiltrados = filtrarProdutos().sort((a, b) => {
+    const validadeA = getValidadeMaisProxima(a.lotes);
+    const validadeB = getValidadeMaisProxima(b.lotes);
+
+    if (!validadeA && !validadeB) return 0;
+    if (!validadeA) return 1;
+    if (!validadeB) return -1;
+    
+    return new Date(validadeA) - new Date(validadeB);
+  });
 
   return (
     <>
@@ -300,7 +316,7 @@ const Estoque = () => {
               <th>Fornecedor</th>
               <th>Preço Unitário</th>
               <th>Estoque Total</th>
-              <th>Validade Mais Próxima</th>
+              <th>Dias até Vencimento</th>
               <th>Status</th>
               <th>Ações</th>
             </tr>
@@ -315,6 +331,7 @@ const Estoque = () => {
             ) : (
               produtosFiltrados.map((produto) => {
                 const validadeProxima = getValidadeMaisProxima(produto.lotes);
+                const diasParaVencimento = getDiasParaVencimento(validadeProxima);
                 const statusInfo = getStatusEtiqueta(validadeProxima);
 
                 return (
@@ -325,8 +342,14 @@ const Estoque = () => {
                     <td>{produto.marca}</td>
                     <td>{produto.fornecedor_nome || 'N/A'}</td>
                     <td>R$ {produto.preco_unit?.toFixed(2)}</td>
-                    <td>{produto.estoque_calculado}</td>
-                    <td>{formatarData(validadeProxima)}</td>
+                    <td>{produto.estoque_reportado}</td>
+                    <td>
+                        {diasParaVencimento !== null ? (
+                          <span style={{ fontWeight: 'bold', color: diasParaVencimento < 0 ? 'red' : 'inherit' }}>
+                            {diasParaVencimento} dias
+                          </span>
+                        ) : 'N/A'}
+                    </td>
                     <td>
                       <span className={`estoque-status ${statusInfo.classe}`} title={statusInfo.legenda}>
                         {statusInfo.icone} {statusInfo.texto}
