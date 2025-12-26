@@ -49,7 +49,7 @@ export const getProdutos = async (skip = 0, limit = 50, termo = '') => {
 
 export const deleteProduto = async (codigo_lm) => {
     try {
-        await axios.delete(`${API_URL}/produtos/${codigo_lm}`);
+        await axios.delete(`${API_URL}/produtos${codigo_lm}`);
         return true;
     } catch (error) {
         console.error("Erro em deleteProduto:", error.response?.data || error.message);
