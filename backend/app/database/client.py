@@ -14,7 +14,8 @@ def connect_to_mongo():
         db = client[settings.DB_NAME]
         print(f"MongoDB conectado com sucesso ao banco: {settings.DB_NAME}")
     except Exception as e:
-        print(f"ERRO DE CONEXÃO COM MONGODB: {e}")
+        print(f"ERRO DE CONEXÃO COM MONGODB: {str(e)}")
+        raise e
 
 def close_mongo_connection():
     """Fecha a conexão com o MongoDB."""
