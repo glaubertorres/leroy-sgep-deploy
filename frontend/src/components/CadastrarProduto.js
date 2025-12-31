@@ -17,7 +17,7 @@ const initialState = {
     cod_subsecao: "",
     avs: false,
     preco_unit: "",
-    estoque_calculado: "",
+    estoque_reportado: "",
     fornecedor_cnpj: "",
     fornecedor_nome: ""
 };
@@ -60,7 +60,7 @@ const CadastroProduto = ({ onProdutoCadastrado, onClose, produtoParaEditar = nul
                 cod_subsecao: produtoParaEditar.cod_subsecao || "",
                 avs: produtoParaEditar.avs || false,
                 preco_unit: produtoParaEditar.preco_unit || "",
-                estoque_calculado: produtoParaEditar.estoque_calculado || "",
+                estoque_reportado: produtoParaEditar.estoque_reportado || "",
                 fornecedor_cnpj: produtoParaEditar.fornecedor_cnpj || "",
                 fornecedor_nome: produtoParaEditar.fornecedor_nome || ""
             });
@@ -104,7 +104,7 @@ const CadastroProduto = ({ onProdutoCadastrado, onClose, produtoParaEditar = nul
                 cod_subsecao: formData.cod_subsecao ? parseInt(formData.cod_subsecao, 10) : null,
                 avs: formData.avs,
                 preco_unit: parseFloat(formData.preco_unit),
-                estoque_calculado: parseInt(formData.estoque_calculado, 10),
+                estoque_reportado: parseInt(formData.estoque_reportado, 10),
                 fornecedor_cnpj: formData.fornecedor_cnpj,
                 fornecedor_nome: formData.fornecedor_nome || null,
                 lotes: []
@@ -191,7 +191,6 @@ const CadastroProduto = ({ onProdutoCadastrado, onClose, produtoParaEditar = nul
                         name="fornecedor_cnpj" 
                         onChange={handleFornecedorChange} 
                         value={formData.fornecedor_cnpj}
-                        required
                         disabled={loadingFornecedores}
                     >
                         <option value="">
@@ -212,8 +211,8 @@ const CadastroProduto = ({ onProdutoCadastrado, onClose, produtoParaEditar = nul
                     <input className="caixa" id="preco_unit" name="preco_unit" type="number" step="0.01" onChange={handleChange} value={formData.preco_unit} required />
                 </div>
                 <div className="campo">
-                    <label htmlFor="estoque_calculado">Estoque Inicial:</label>
-                    <input className="caixa" id="estoque_calculado" name="estoque_calculado" type="number" onChange={handleChange} value={formData.estoque_calculado} required />
+                    <label htmlFor="estoque_reportado">Estoque Inicial:</label>
+                    <input className="caixa" id="estoque_reportado" name="estoque_reportado" type="number" onChange={handleChange} value={formData.estoque_reportado} required />
                 </div>
             </div>
 
@@ -235,7 +234,7 @@ const CadastroProduto = ({ onProdutoCadastrado, onClose, produtoParaEditar = nul
                 <div className="campo">
                     <label htmlFor="avs">
                         <input type="checkbox" id="avs" name="avs" onChange={handleChange} checked={formData.avs} />
-                        AVS (Alto Valor de Segurança)
+                        AVS (Artigo em Via de Supressão)
                     </label>
                 </div>
             </div>

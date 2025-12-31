@@ -17,8 +17,8 @@ class Produto(BaseModel):
     codigo_lm: int
     ean: Optional[int] = None
     marca: str = Field(..., max_length=100)
-    ficha_tec: str = Field(..., max_length=500)
-    link_prod: str = Field(..., max_length=300)
+    ficha_tec: Optional[str] = None
+    link_prod: Optional[str] = None
     cor: Optional[str] = Field(..., max_length=50)
     secao: Optional[str] = Field(None, max_length=200)
     cod_secao: Optional[int] = None
