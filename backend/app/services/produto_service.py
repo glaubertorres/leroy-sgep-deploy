@@ -3,7 +3,7 @@ import os
 import shutil
 import io
 
-from typing import List, Optional
+from typing import List, Optional, Union
 from pymongo.collection import Collection
 from pymongo import UpdateOne
 from datetime import datetime, timezone
