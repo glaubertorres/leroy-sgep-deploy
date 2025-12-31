@@ -208,9 +208,15 @@ const Estoque = () => {
     const success = await deleteProduto(productToDelete.codigo_lm); 
     
     if (success) {
-      await carregarDados(paginaAtual, searchTerm);
+      if (paginaAtual > 1 && produtos.length === 1) {
+          await carregarDados(paginaAtual - 1, searchTerm);
+      } else {
+          await carregarDados(paginaAtual, searchTerm);
+      }
+      
     } else {
       console.error("Falha ao deletar o produto.");
+      alert("Erro ao excluir: O servidor não conseguiu encontrar ou remover o produto.");
     }
     
     handleCloseDeleteModal();
