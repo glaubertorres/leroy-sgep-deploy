@@ -140,21 +140,11 @@ class ProdutoService:
             
         return None
 
-    def delete(self, codigo_lm: Union[int, str]) -> bool:
-        """Tenta excluir pelo código numérico E pelo código texto."""
-        
-        try:
-            cod_int = int(codigo_lm)
-            res = self.collection.delete_one({"codigo_lm": cod_int})
-            if res.deleted_count > 0:
-                return True
-        except ValueError:
-            pass 
+    def delete(self, codigo_lm: int) -> bool:
+        """Exclui o produto principal e todos os seus lotes."""
+        result = self.collection.delete_one({"codigo_lm": codigo_lm})
 
-        cod_str = str(codigo_lm).strip()
-        res = self.collection.delete_one({"codigo_lm": cod_str})
-        
-        return res.deleted_count > 0
+        return result.deleted_count == 1
 
     def update_lote(self, codigo_lm: int, codigo_lote: int, lote_update: Lote) -> Optional[Produto]:
         """Atualiza os campos de um lote específico dentro do produto."""
