@@ -34,7 +34,7 @@ def get_produto_by_id(codigo_lm: int, service: ProdutoService = Depends(get_prod
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado")
     return produto
 
-@router.put("/{codigo_lm}", response_model=Produto)
+@router.put("/{codigo_lm:int}", response_model=Produto)
 def update_produto(codigo_lm: int, produto: Produto, service: ProdutoService = Depends(get_produto_service)):
     """Atualiza os dados de um produto existente."""
     atualizado = service.update(codigo_lm, produto)
@@ -42,7 +42,7 @@ def update_produto(codigo_lm: int, produto: Produto, service: ProdutoService = D
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado para atualizar")
     return atualizado
 
-@router.delete("/{codigo_lm}", status_code=status.HTTP_204_NO_CONTENT)
+@router.delete("/{codigo_lm:int}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_produto(codigo_lm: int, service: ProdutoService = Depends(get_produto_service)):
     """Exclui um produto pelo código LM."""
     if not service.delete(codigo_lm):

@@ -303,10 +303,10 @@ class ProdutoService:
                     
                     dados_setOnInsert = {
                         "codigo_lm": record['codigo_lm'],
-                        "marca": "Aguardando Cadastro",
-                        "ficha_tec": "Aguardando Cadastro",
-                        "link_prod": "Aguardando Cadastro",
-                        "cor": "Aguardando Cadastro",
+                        "marca": "",
+                        "ficha_tec": "",
+                        "link_prod": "",
+                        "cor": "",
                         "avs": False,
                         "estoque_calculado": 0,
                         "lotes": [],
@@ -421,10 +421,10 @@ class ProdutoService:
                 # Dados inseridos apenas se for um produto novo
                 dados_setOnInsert = {
                     "codigo_lm": record['codigo_lm'],
-                    "marca": "Aguardando Cadastro",
-                    "ficha_tec": "Aguardando Cadastro",
-                    "link_prod": "Aguardando Cadastro",
-                    "cor": "Aguardando Cadastro",
+                    "marca": "",
+                    "ficha_tec": "",
+                    "link_prod": "",
+                    "cor": "",
                     "avs": False,
                     "estoque_calculado": 0,
                     "lotes": [],
