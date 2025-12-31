@@ -43,8 +43,8 @@ def update_produto(codigo_lm: int, produto: Produto, service: ProdutoService = D
     return atualizado
 
 @router.delete("/{codigo_lm}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_produto(codigo_lm: int, service: ProdutoService = Depends(get_produto_service)):
-    """Exclui um produto pelo código LM."""
+def delete_produto(codigo_lm: str, service: ProdutoService = Depends(get_produto_service)):
+    """ Exclui um produto pelo código LM s"""
     if not service.delete(codigo_lm):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado para exclusão")
     return Response(status_code=status.HTTP_204_NO_CONTENT)
