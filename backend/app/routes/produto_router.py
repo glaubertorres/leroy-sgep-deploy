@@ -43,7 +43,7 @@ def update_produto(codigo_lm: int, produto: Produto, service: ProdutoService = D
     return atualizado
 
 @router.delete("/{codigo_lm}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_produto(codigo_lm: int, service: ProdutoService = Depends(get_produto_service)):
+def delete_produto(codigo_lm: str, service: ProdutoService = Depends(get_produto_service)):
     """Exclui um produto pelo código LM."""
     if not service.delete(codigo_lm):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Produto não encontrado para exclusão")
@@ -69,7 +69,7 @@ def update_lote_data(codigo_lm: str, codigo_lote: str, lote_update: Lote, servic
     return atualizado
 
 @router.delete("/{codigo_lm}/lotes/{codigo_lote}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_lote_data(codigo_lm: int, codigo_lote: str, service: ProdutoService = Depends(get_produto_service)):
+def delete_lote_data(codigo_lm: str, codigo_lote: str, service: ProdutoService = Depends(get_produto_service)):
     """Exclui um lote específico de um produto e atualiza o estoque."""
     if not service.deletar_lote(codigo_lm, codigo_lote):
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Lote ou Produto não encontrado para exclusão")

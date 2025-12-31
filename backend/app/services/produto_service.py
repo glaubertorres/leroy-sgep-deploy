@@ -140,11 +140,24 @@ class ProdutoService:
             
         return None
 
-    def delete(self, codigo_lm: int) -> bool:
-        """Exclui o produto principal e todos os seus lotes."""
-        result = self.collection.delete_one({"codigo_lm": codigo_lm})
+    def delete(self, codigo_lm: Union[int, str]) -> bool:
+        """
+        Exclui o produto principal e todos os lotes embutidos.
+        Usa busca híbrida (Int/Str) para evitar erro 404.
+        """
+        
+        try:
+            cod_int = int(codigo_lm)
+            result = self.collection.delete_one({"codigo_lm": cod_int})
+            if result.deleted_count > 0:
+                return True
+        except ValueError:
+            pass 
 
-        return result.deleted_count == 1
+        cod_str = str(codigo_lm).strip()
+        result_str = self.collection.delete_one({"codigo_lm": cod_str})
+        
+        return result_str.deleted_count > 0
 
     def update_lote(self, codigo_lm: Union[int, str], codigo_lote: Union[int, str], lote_update: Lote) -> Optional[Produto]:
         """Atualiza lote com busca híbrida (Int/Str) para evitar erro 404."""
@@ -207,19 +220,38 @@ class ProdutoService:
         
         return None
 
-    def deletar_lote(self, codigo_lm: int, codigo_lote: int) -> bool:
-        """Remove um lote específico da lista de lotes de um produto."""
-        produto_atual = self.get_by_codigo_lm(codigo_lm)
+    def deletar_lote(self, codigo_lm: Union[int, str], codigo_lote: Union[int, str]) -> bool:
+        """
+        Marca o lote como inativo e desconta do estoque total.
+        Não remove o registro do array 'lotes'.
+        """
+        
+        produto_atual = None
+        try:
+            produto_atual = self.get_by_codigo_lm(int(codigo_lm))
+        except ValueError:
+            pass
+            
+        if not produto_atual:
+             produto_atual = self.get_by_codigo_lm(str(codigo_lm).strip())
+             
         if not produto_atual: return False
         
-        lote_para_deletar = next((l for l in produto_atual.lotes if l.codigo_lote == codigo_lote), None)
+        lote_para_deletar = next(
+            (l for l in produto_atual.lotes if str(l.codigo_lote) == str(codigo_lote)), 
+            None
+        )
+        
         if not lote_para_deletar or lote_para_deletar.ativo is False:
             return False
         
         quantidade_a_subtrair = lote_para_deletar.quantidade_lote
         
         result = self.collection.update_one(
-           {"codigo_lm": codigo_lm, "lotes.codigo_lote": codigo_lote},
+           {
+               "codigo_lm": produto_atual.codigo_lm, 
+               "lotes.codigo_lote": lote_para_deletar.codigo_lote 
+           },
             {
                 "$set": {
                     "lotes.$.ativo": False, 

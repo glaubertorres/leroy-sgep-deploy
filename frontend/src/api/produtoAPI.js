@@ -18,7 +18,7 @@ export const createProduto = async (produtoData) => {
 
 export const updateProduto = async (codigo_lm, produtoData) => {
     try {
-        const response = await axios.put(`${API_URL}/produtos/${codigo_lm}`, produtoData, {
+        const response = await axios.put(`${API_URL}/produtos/${encodeURIComponent(codigo_lm)}`, produtoData, {
             headers: {
                 'Content-Type': 'application/json',
             }
@@ -49,7 +49,7 @@ export const getProdutos = async (skip = 0, limit = 50, termo = '') => {
 
 export const deleteProduto = async (codigo_lm) => {
     try {
-        await axios.delete(`${API_URL}/produtos${codigo_lm}`);
+        await axios.delete(`${API_URL}/produtos/${encodeURIComponent(codigo_lm)}`);
         return true;
     } catch (error) {
         console.error("Erro em deleteProduto:", error.response?.data || error.message);
@@ -64,12 +64,7 @@ export const importarProdutosUpload = async (file) => {
 
         const response = await axios.post(
             `${API_URL}/produtos/importar-upload`,
-            formData,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            }
+            formData
         );
 
         return response.data;
