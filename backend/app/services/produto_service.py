@@ -146,13 +146,27 @@ class ProdutoService:
 
         return result.deleted_count == 1
 
-    def update_lote(self, codigo_lm: int, codigo_lote: int, lote_update: Lote) -> Optional[Produto]:
-        """Atualiza os campos de um lote específico dentro do produto."""
-        produto_atual = self.get_by_codigo_lm(codigo_lm)
+    def update_lote(self, codigo_lm: Union[int, str], codigo_lote: Union[int, str], lote_update: Lote) -> Optional[Produto]:
+        """Atualiza lote com busca híbrida (Int/Str) para evitar erro 404."""
         
-        if not produto_atual: return None
+        produto_atual = None
         
-        lote_antigo = next((l for l in produto_atual.lotes if l.codigo_lote == codigo_lote), None)
+        try:
+            produto_atual = self.get_by_codigo_lm(int(codigo_lm))
+        except ValueError:
+            pass
+            
+        if not produto_atual:
+             produto_atual = self.get_by_codigo_lm(str(codigo_lm).strip())
+             
+        if not produto_atual: 
+            return None
+        
+        lote_antigo = next(
+            (l for l in produto_atual.lotes if str(l.codigo_lote) == str(codigo_lote)), 
+            None
+        )
+        
         if not lote_antigo: return None
         
         delta_quantidade = 0
@@ -176,8 +190,12 @@ class ProdutoService:
             for key, value in update_data.items()
         }
 
+        
         result = self.collection.update_one(
-            {"codigo_lm": codigo_lm, "lotes.codigo_lote": codigo_lote},
+            {
+                "codigo_lm": produto_atual.codigo_lm, 
+                "lotes.codigo_lote": lote_antigo.codigo_lote
+            },
             {
                 "$set": set_fields,
                 "$inc": {"estoque_calculado": delta_quantidade}
@@ -185,7 +203,7 @@ class ProdutoService:
         )
 
         if result.modified_count == 1:
-            return self.get_by_codigo_lm(codigo_lm)
+            return self.get_by_codigo_lm(produto_atual.codigo_lm)
         
         return None
 

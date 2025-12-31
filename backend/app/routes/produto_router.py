@@ -61,7 +61,7 @@ def add_lote_to_produto(codigo_lm: int, lote: Lote, service: ProdutoService = De
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 @router.put("/{codigo_lm}/lotes/{codigo_lote}", response_model=Produto)
-def update_lote_data(codigo_lm: int, codigo_lote: str, lote_update: Lote, service: ProdutoService = Depends(get_produto_service)):
+def update_lote_data(codigo_lm: str, codigo_lote: str, lote_update: Lote, service: ProdutoService = Depends(get_produto_service)):
     """Atualiza um lote específico e recalcula o estoque."""
     atualizado = service.update_lote(codigo_lm, codigo_lote, lote_update)
     if not atualizado:
