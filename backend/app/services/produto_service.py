@@ -142,14 +142,9 @@ class ProdutoService:
 
     def delete(self, codigo_lm: int) -> bool:
         """Exclui o produto principal e todos os seus lotes."""
-        try:
-            codigo_lm_int = int(codigo_lm)
-            
-            result = self.collection.delete_one({"codigo_lm": codigo_lm_int})
+        result = self.collection.delete_one({"codigo_lm": codigo_lm})
 
-            return result.deleted_count == 1
-        except ValueError:
-            return False
+        return result.deleted_count == 1
 
     def update_lote(self, codigo_lm: int, codigo_lote: int, lote_update: Lote) -> Optional[Produto]:
         """Atualiza os campos de um lote específico dentro do produto."""
