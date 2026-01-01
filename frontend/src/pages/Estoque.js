@@ -347,7 +347,7 @@ const Estoque = () => {
                           {produto.codigo_lm}
                         </a>
                       ) : (
-                        <span style={{ color: 'inherit' }}>
+                        <span style={{ color: 'black' }}>
                           {produto.codigo_lm}
                         </span>
                       )}
@@ -364,7 +364,7 @@ const Estoque = () => {
                           {produto.nome_produto}
                         </a>
                       ) : (
-                        <span style={{ color: 'inherit' }}>
+                        <span style={{ color: 'black' }}>
                           {produto.nome_produto}
                         </span>
                       )}
