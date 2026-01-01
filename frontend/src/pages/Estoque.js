@@ -310,10 +310,9 @@ const Estoque = () => {
           <thead>
             <tr>
               <th>Cód. LM</th>
-              <th>EAN</th>
               <th>Nome do Produto</th>
               <th>Marca</th>
-              <th>Fornecedor</th>
+              <th>Seção</th>
               <th>Preço Unitário</th>
               <th>Estoque Total</th>
               <th>Dias até Vencimento</th>
@@ -336,11 +335,42 @@ const Estoque = () => {
 
                 return (
                   <tr key={produto.codigo_lm}>
-                    <td>{produto.codigo_lm}</td>
-                    <td>{produto.ean || 'N/A'}</td>
-                    <td>{produto.nome_produto}</td>
+                    <td>
+                      {produto.link_prod ? (
+                        <a 
+                          href={produto.link_prod} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="lm-link-clicavel"
+                          title="Abrir página do produto na Leroy Merlin"
+                        >
+                          {produto.codigo_lm}
+                        </a>
+                      ) : (
+                        <span style={{ color: 'inherit' }}>
+                          {produto.codigo_lm}
+                        </span>
+                      )}
+                    </td>
+                    <td>
+                      {produto.ficha_tec ? (
+                        <a 
+                          href={produto.ficha_tec} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="lm-link-clicavel"
+                          title="Abrir ficha técnica do produto"
+                        >
+                          {produto.ficha_tec}
+                        </a>
+                      ) : (
+                        <span style={{ color: 'inherit' }}>
+                          {produto.ficha_tec}
+                        </span>
+                      )}
+                    </td>
                     <td>{produto.marca}</td>
-                    <td>{produto.fornecedor_nome || 'N/A'}</td>
+                    <td>{produto.secao}</td>
                     <td>R$ {produto.preco_unit?.toFixed(2)}</td>
                     <td>{produto.estoque_reportado}</td>
                     <td>
