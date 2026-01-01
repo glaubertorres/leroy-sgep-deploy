@@ -148,7 +148,7 @@ const Dashboard = () => {
             <div className="kpis-grid">
                 <div className="kpi-card estoque-card">
                     <div className="kpi-header">
-                        <h3>Valor Total do Estoque</h3>
+                        <h3>Valor Total do Estoque Perecível</h3>
                     </div>
                     <div className="kpi-value">{formatCurrency(valor_total_estoque)}</div>
                     <div className="kpi-footer">
