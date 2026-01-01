@@ -365,7 +365,7 @@ const Estoque = () => {
                         </a>
                       ) : (
                         <span style={{ color: 'inherit' }}>
-                          {produto.ficha_tec}
+                          {produto.nome_produto}
                         </span>
                       )}
                     </td>
