@@ -361,7 +361,7 @@ const Estoque = () => {
                           className="lm-link-clicavel"
                           title="Abrir ficha técnica do produto"
                         >
-                          {produto.ficha_tec}
+                          {produto.nome_produto}
                         </a>
                       ) : (
                         <span style={{ color: 'inherit' }}>
