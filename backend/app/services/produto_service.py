@@ -22,9 +22,9 @@ class ProdutoService:
         self.fornecedor_collection: Collection = self.db['fornecedores']
         
     def get_all(self, termo_busca: Optional[str] = None, skip: int = 0, limit: int = 50) -> dict:
-        """Retorna todos os produtos cadastrados."""
-        query = {}
-
+        """Retorna todos os produtos ordenados pela data de vencimento mais próxima."""
+        
+        match_query = {}
         if termo_busca:
             regex_term = {"$regex": termo_busca, "$options": "i"}
             or_conditions = [
@@ -37,16 +37,54 @@ class ProdutoService:
                 or_conditions.append({"codigo_lm_str": {"$regex": f"^{termo_busca}", "$options": "i"}})
                 or_conditions.append({"ean": int(termo_busca)})
             
-            query["$or"] = or_conditions
+            match_query["$or"] = or_conditions
 
-        total = self.collection.count_documents(query)
-        
-        cursor = self.collection.find(query).skip(skip)
-        
-        if limit > 0:
-            cursor = cursor.limit(limit)
+        pipeline = [
+            {"$match": match_query},
             
-        produtos_data = list(cursor)
+            {
+                "$addFields": {
+                    "proxima_validade": {
+                        "$min": {
+                            "$map": {
+                                "input": {
+                                    "$filter": {
+                                        "input": "$lotes",
+                                        "as": "lote",
+                                        "cond": { "$eq": ["$$lote.ativo", True] }
+                                    }
+                                },
+                                "as": "lote",
+                                "in": "$$lote.data_validade"
+                            }
+                        }
+                    }
+                }
+            },
+            
+            {
+                "$addFields": {
+                    "sort_validade": {
+                        "$ifNull": ["$proxima_validade", datetime(3000, 1, 1)]
+                    }
+                }
+            },
+            
+            {"$sort": {"sort_validade": 1}},
+            
+            {
+                "$facet": {
+                    "metadata": [{"$count": "total"}],
+                    "data": [{"$skip": skip}, {"$limit": limit}]
+                }
+            }
+        ]
+
+        resultado_aggregacao = list(self.collection.aggregate(pipeline))
+        
+        metadados = resultado_aggregacao[0].get('metadata', [])
+        total = metadados[0]['total'] if metadados else 0
+        produtos_data = resultado_aggregacao[0].get('data', [])
 
         fornecedor_service = FornecedorService()
         todos_fornecedores = fornecedor_service.get_all()
@@ -54,10 +92,17 @@ class ProdutoService:
         
         resultados = []
         for data in produtos_data:
-            produto = Produto(**data)
-            if produto.fornecedor_cnpj and produto.fornecedor_cnpj in fornecedor_map:
-                produto.fornecedor_nome = fornecedor_map[produto.fornecedor_cnpj]
-            resultados.append(produto)
+            data.pop('proxima_validade', None)
+            data.pop('sort_validade', None)
+            
+            try:
+                produto = Produto(**data)
+                if produto.fornecedor_cnpj and produto.fornecedor_cnpj in fornecedor_map:
+                    produto.fornecedor_nome = fornecedor_map[produto.fornecedor_cnpj]
+                resultados.append(produto)
+            except Exception as e:
+                print(f"Erro ao processar produto {data.get('codigo_lm')}: {e}")
+                continue
 
         return {
             "produtos": resultados,
